@@ -2,6 +2,8 @@
 #pip install -r path/to/requirements.txt
 import pandas as pd
 import re
+from rut_chile import rut_chile
+
 from fastapi import FastAPI,Path, Response
 from typing import Optional
 import json
@@ -30,6 +32,9 @@ def callback(info):
     exists  = None
     ve      = None
     exists  = session.query(Vecino).filter(Vecino.rut == info.rut.strip()).count()
+
+    print(rut_chile.is_valid_rut(info.rut))
+    return 
 
     data_df = dict(     rut               = info.rut,
                         nombre            = info.nombre,
@@ -60,7 +65,7 @@ def callback(info):
                         id_direccion      = info.id_direccion,
                         sexo              = None,
                         fc_nacimiento     = None)
-                        
+
         session.add(ve)
             
     else:
@@ -76,8 +81,6 @@ def callback(info):
                                                                             'fc_nacimiento'     : None})
 
     session.commit()
-
-    
     return exists
 
 
